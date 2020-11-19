@@ -1,0 +1,8 @@
+[
+    {
+        "name": "void",
+        "build": "cd server && go build",
+        "run": "cd server && ./void",
+        "time": 0
+    }
+]
