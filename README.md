@@ -2,6 +2,10 @@
 
 A minimalistic build server
 
+## Usage
+```
+./turnine -l 
+
 ## Config
 ```
 [

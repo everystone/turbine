@@ -2,12 +2,16 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
 )
 
-var configuration *config
+var (
+	configuration *config
+	port          = flag.String("p", "666", "listen port")
+)
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
@@ -32,13 +36,13 @@ func handleHook(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	flag.Parse()
 	conf := &config{}
 	conf.load()
 	fs := http.FileServer(http.Dir("./static"))
-	port := 8080
 	http.Handle("/", fs)
 	http.HandleFunc("/api/", handler)
 	http.HandleFunc("/payload", handleHook)
-	log.Printf("Turbine spinning at port %d", port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
+	log.Printf("Turbine spinning at port %s", *port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", *port), nil))
 }
