@@ -97,7 +97,10 @@ func (b *builder) deploy() {
 	b.runner = exec.Command(b.config.Run)
 	b.runner.Dir = b.workingDir
 	log.Printf("Process started %s", b.config.Run)
-	b.runner.Run()
+	err := b.runner.Run()
+	if err != nil {
+		log.Printf("Deplyment failed: %v", err)
+	}
 
 }
 
