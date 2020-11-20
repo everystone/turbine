@@ -68,6 +68,7 @@ func (b *builder) build() error {
 	log.Printf("Starting build in workind dir %s", b.workingDir)
 	cmd := exec.Command("/bin/sh", "-c", b.config.Run)
 	cmd.Dir = b.workingDir
+	log.Printf("Running command: %v %v %v", cmd.Path, cmd.Args, cmd.Dir)
 	err := cmd.Run()
 	t := time.Now()
 	elapsed := t.Sub(b.buildStart)
