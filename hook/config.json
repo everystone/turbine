@@ -1,9 +1,9 @@
 [
     {
-        "name": "everystone/void",
+        "name": "everystone/turbine",
         "branch": "master",
         "build": "cd hook && go build",
-        "run": "cd hook && ./turbine -p 888",
+        "run": "cd hook && ./turbine -p 8420",
         "time": 0
     }
 ]
