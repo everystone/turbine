@@ -38,6 +38,14 @@ func (b *builder) fetchCode() error {
 			log.Printf("and folder does not exist, aborting.")
 			return err
 		}
+
+		// attempt to open existing repo
+		repo, err = git.PlainOpen(path)
+		if err != nil {
+			log.Printf("Failed to open existing repo: %v", err)
+			return err
+		}
+
 	}
 	// checkout correct branch
 	w, _ := repo.Worktree()
