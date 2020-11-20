@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 	"time"
 
 	"github.com/go-git/go-git/v5"
@@ -65,7 +66,8 @@ func (b *builder) fetchCode() error {
 
 func (b *builder) build() error {
 	// execute shell script that builds repo, read from json config
-	cmd := exec.Command(b.config.Build)
+	x := strings.Split(b.config.Build, " ")
+	cmd := exec.Command(x[0], x[1:]...)
 	cmd.Dir = b.workingDir
 	err := cmd.Run()
 	t := time.Now()
@@ -93,8 +95,8 @@ func (b *builder) deploy() {
 	// execute command from config in new process
 	// or as a managed child process that we can controll from api?
 	// support rest api for status, stop, start, restart of service..
-
-	b.runner = exec.Command(b.config.Run)
+	x := strings.Split(b.config.Run, " ")
+	b.runner = exec.Command(x[0], x[1:]...)
 	b.runner.Dir = b.workingDir
 	log.Printf("Process started %s", b.config.Run)
 	err := b.runner.Run()

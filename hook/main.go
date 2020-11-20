@@ -42,7 +42,10 @@ func handleHook(w http.ResponseWriter, r *http.Request) {
 
 			log.Printf("Killing existing slave..")
 			// todo: let it finish if building?
-			slave.runner.Process.Kill()
+			// todo: automatically remove slaves that have exited from map
+			if slave.runner != nil {
+				slave.runner.Process.Kill()
+			}
 			slave = newBuilder(repo)
 			go slave.run()
 			return
