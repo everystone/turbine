@@ -66,7 +66,7 @@ func (b *builder) fetchCode() error {
 func (b *builder) build() error {
 	// execute shell script that builds repo, read from json config
 	log.Printf("Starting build in workind dir %s", b.workingDir)
-	cmd := exec.Command("/bin/sh", "-c", b.config.Run)
+	cmd := exec.Command("/bin/sh", "-c", b.config.Build)
 	cmd.Dir = b.workingDir
 	log.Printf("Running command: %v %v %v", cmd.Path, cmd.Args, cmd.Dir)
 	err := cmd.Run()
