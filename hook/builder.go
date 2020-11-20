@@ -20,18 +20,16 @@ type builder struct {
 func (b *builder) fetchCode() error {
 	// if folder does not exist, run git clone
 
-	repo, err := git.PlainClone("/repos/", false, &git.CloneOptions{
+	repo, err := git.PlainClone("./repos/", false, &git.CloneOptions{
 		URL:      fmt.Sprintf("git@github.com:%s.git", b.config.Name),
 		Progress: os.Stdout,
 	})
 	if err != nil {
 		log.Printf("Failed to clone %s", err)
-		if repo == nil {
-			log.Printf("repo is nil, aborting.")
+		if _, err := os.Stat(fmt.Sprintf("./repos/%s", b.config.Name)); os.IsNotExist(err) {
+			log.Printf("and folder does not exist, aborting.")
 			return err
 		}
-		// repo exists, continue and checkout branch.
-		log.Printf("repo exists")
 	}
 	// checkout correct branch
 	w, _ := repo.Worktree()

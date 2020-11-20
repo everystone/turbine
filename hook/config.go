@@ -1,5 +1,7 @@
 package main
 
+import "log"
+
 type repoConfig struct {
 	Name      string `json:"name"`
 	Branch    string `json:"branch"`
@@ -21,6 +23,7 @@ func (c *config) load() {
 			c.repos[i].Branch = "master"
 		}
 	}
+	log.Printf("Loaded %d repo configs.", len(c.repos))
 }
 
 func (c *config) save() {

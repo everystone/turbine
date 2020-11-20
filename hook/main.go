@@ -58,8 +58,8 @@ func handleHook(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	flag.Parse()
-	conf := &config{}
-	conf.load()
+	configuration = &config{}
+	configuration.load()
 	slaves = make(map[string]*builder)
 	fs := http.FileServer(http.Dir("./static"))
 	http.Handle("/", fs)
