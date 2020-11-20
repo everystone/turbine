@@ -15,6 +15,7 @@ type user struct {
 }
 
 type pushPayload struct {
+	Zen        string     `json:"zen"`
 	Ref        string     `json:"ref"`
 	Sender     user       `json:"sender"`
 	Pusher     user       `json:"pusher"`

@@ -26,6 +26,11 @@ func handleHook(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	if p.Zen != "" {
+		log.Printf("Ping payload detected, skipping.")
+		fmt.Fprintf(w, "hello friend")
+		return
+	}
 	log.Printf("Github payload: %v", p)
 	ref := strings.Split(p.Ref, "/")
 	branch := ref[len(ref)-1]
@@ -48,6 +53,7 @@ func handleHook(w http.ResponseWriter, r *http.Request) {
 	} else {
 		log.Printf("No config matches: %s  branch: %s", p.Repository.Fullname, branch)
 	}
+	fmt.Fprintf(w, "build started")
 }
 
 func main() {
