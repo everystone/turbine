@@ -47,5 +47,6 @@ func main() {
 	http.HandleFunc("/api/", handler)
 	http.HandleFunc("/payload", handleHook)
 	log.Printf("Turbine spinning at port %s", *port)
+	log.Printf("Github hook: /payload")
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", *port), nil))
 }
