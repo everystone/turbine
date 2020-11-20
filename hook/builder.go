@@ -65,23 +65,22 @@ func (b *builder) fetchCode() error {
 
 func (b *builder) build() error {
 	// execute shell script that builds repo, read from json config
-	log.Printf("Starting build in workind dir %s", b.workingDir)
 	cmd := exec.Command("/bin/sh", "-c", b.config.Build)
 	cmd.Dir = b.workingDir
-	log.Printf("Running command: %v %v %v", cmd.Path, cmd.Args, cmd.Dir)
+	log.Printf("Running command: %v", cmd.Args)
 	err := cmd.Run()
 	t := time.Now()
 	elapsed := t.Sub(b.buildStart)
 	if err != nil {
-		log.Printf("Build of %s completed in %v", b.config.Name, elapsed)
-		b.config.BuildTime = int(elapsed.Seconds())
-		configuration.save()
-		return nil
+		log.Printf("Build of %s failed after %v", b.config.Name, elapsed)
+		log.Printf("error: %v", err)
+		return err
 	}
 
-	log.Printf("Build of %s failed after %v", b.config.Name, elapsed)
-	log.Printf("error: %v", err)
-	return err
+	log.Printf("Build of %s completed in %v", b.config.Name, elapsed)
+	b.config.BuildTime = int(elapsed.Seconds())
+	configuration.save()
+	return nil
 }
 
 func (b *builder) status() string {
