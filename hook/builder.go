@@ -21,7 +21,7 @@ type builder struct {
 func (b *builder) fetchCode() error {
 	// if folder does not exist, run git clone
 	home, err := os.UserHomeDir()
-	publicKeys, err := ssh.NewPublicKeysFromFile("git", fmt.Sprintf("%s/.ssh/id_rsa.pub", home), "")
+	publicKeys, err := ssh.NewPublicKeysFromFile("git", fmt.Sprintf("%s/.ssh/id_rsa", home), "")
 	if err != nil {
 		log.Printf("generate publickeys failed: %s\n", err.Error())
 	}
