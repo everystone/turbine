@@ -41,7 +41,7 @@ func (b *builder) fetchCode() error {
 	}
 	// checkout correct branch
 	w, _ := repo.Worktree()
-	ref := plumbing.NewBranchReferenceName(fmt.Sprintf("refs/heads/%s", b.config.Branch))
+	ref := plumbing.NewBranchReferenceName(b.config.Branch)
 
 	log.Printf("Checking out branch %s", ref)
 	err = w.Checkout(&git.CheckoutOptions{
