@@ -12,6 +12,7 @@ import (
 var (
 	configuration *config
 	port          = flag.String("p", "666", "listen port")
+	slaves        map[string]*builder
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -31,8 +32,19 @@ func handleHook(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Webhook event %s branch: %s", p.Repository.Fullname, branch)
 	// check if we have config for repo / branch
 	if ok, repo := configuration.get(p.Repository.Fullname, branch); ok {
+		// we have config, check if we have an existing slave/builder
+		if slave, ok := slaves[repo.Name]; ok {
+
+			log.Printf("Killing existing slave..")
+			// todo: let it finish if building?
+			slave.runner.Process.Kill()
+			slave = newBuilder(repo)
+			go slave.run(branch)
+			return
+		}
 		build := newBuilder(repo)
-		go build.run(p.Ref)
+		slaves[repo.Name] = build
+		go build.run(branch)
 	} else {
 		log.Printf("No config matches.")
 	}
@@ -42,6 +54,7 @@ func main() {
 	flag.Parse()
 	conf := &config{}
 	conf.load()
+	slaves = make(map[string]*builder)
 	fs := http.FileServer(http.Dir("./static"))
 	http.Handle("/", fs)
 	http.HandleFunc("/api/", handler)

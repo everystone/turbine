@@ -14,6 +14,7 @@ import (
 type builder struct {
 	config     *repoConfig
 	buildStart time.Time
+	runner     *exec.Cmd
 }
 
 func (b *builder) fetchCode() error {
@@ -76,6 +77,11 @@ func (b *builder) deploy() {
 	// execute command from config in new process
 	// or as a managed child process that we can controll from api?
 	// support rest api for status, stop, start, restart of service..
+
+	b.runner = exec.Command(b.config.Run)
+	log.Printf("Process started %s", b.config.Run)
+	b.runner.Run()
+
 }
 
 func (b *builder) run(branch string) {

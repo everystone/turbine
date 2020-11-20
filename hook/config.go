@@ -4,6 +4,7 @@ type repoConfig struct {
 	Name      string `json:"name"`
 	Branch    string `json:"branch"`
 	Build     string `json:"build"`
+	Run       string `json:"run"`
 	BuildTime int    `json:"buildTime"`
 }
 
