@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 )
 
 var (
@@ -24,15 +25,17 @@ func handleHook(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	log.Printf("Github payload: %s", p.Ref)
-
-	// check if we have config
-	if ok, repo := configuration.get(p.Repository.Name); ok {
-
+	log.Printf("Github payload: %v", p)
+	ref := strings.Split(p.Ref, "/")
+	branch := ref[len(ref)-1]
+	log.Printf("Webhook event %s branch: %s", p.Repository.Fullname, branch)
+	// check if we have config for repo / branch
+	if ok, repo := configuration.get(p.Repository.Fullname, branch); ok {
 		build := newBuilder(repo)
-		go build.build(p.Repository.Fullname)
+		go build.run(p.Ref)
+	} else {
+		log.Printf("No config matches.")
 	}
-
 }
 
 func main() {

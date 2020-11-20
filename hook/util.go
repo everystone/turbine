@@ -19,3 +19,14 @@ func load(filePath string, out interface{}) {
 		log.Fatalf("Failed to parse %s: %v", filePath, err)
 	}
 }
+
+func save(filePath string, data interface{}) {
+	b, err := json.Marshal(data)
+	if err != nil {
+		log.Panicf("Failed to serialize config: %v", err)
+	}
+	err = ioutil.WriteFile(filePath, b, 0644)
+	if err != nil {
+		log.Panicf("Failed to write config: %v", err)
+	}
+}
