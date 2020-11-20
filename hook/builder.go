@@ -9,6 +9,7 @@ import (
 
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
+	"github.com/go-git/go-git/v5/plumbing/transport/ssh"
 )
 
 type builder struct {
@@ -20,8 +21,14 @@ type builder struct {
 func (b *builder) fetchCode() error {
 	// if folder does not exist, run git clone
 
+	publicKeys, err := ssh.NewPublicKeysFromFile("git", "~/.ssh/id_rsa.pub", "")
+	if err != nil {
+		log.Printf("generate publickeys failed: %s\n", err.Error())
+	}
+
 	repo, err := git.PlainClone("./repos/", false, &git.CloneOptions{
 		URL:      fmt.Sprintf("git@github.com:%s.git", b.config.Name),
+		Auth:     publicKeys,
 		Progress: os.Stdout,
 	})
 	if err != nil {
