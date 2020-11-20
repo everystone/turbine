@@ -26,14 +26,15 @@ func (b *builder) fetchCode() error {
 		log.Printf("generate publickeys failed: %s\n", err.Error())
 	}
 
-	repo, err := git.PlainClone("./repos/", false, &git.CloneOptions{
+	path := fmt.Sprintf("./repos/%s", b.config.Name)
+	repo, err := git.PlainClone(path, false, &git.CloneOptions{
 		URL:      fmt.Sprintf("git@github.com:%s.git", b.config.Name),
 		Auth:     publicKeys,
 		Progress: os.Stdout,
 	})
 	if err != nil {
 		log.Printf("Failed to clone %s", err)
-		if _, err := os.Stat(fmt.Sprintf("./repos/%s", b.config.Name)); os.IsNotExist(err) {
+		if _, err := os.Stat(path); os.IsNotExist(err) {
 			log.Printf("and folder does not exist, aborting.")
 			return err
 		}
