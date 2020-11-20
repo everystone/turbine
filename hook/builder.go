@@ -33,7 +33,7 @@ func (b *builder) fetchCode() error {
 		Progress: os.Stdout,
 	})
 	if err != nil {
-		log.Printf("Failed to clone %s", err)
+		log.Printf("%s", err)
 		if _, err := os.Stat(path); os.IsNotExist(err) {
 			log.Printf("and folder does not exist, aborting.")
 			return err
@@ -73,6 +73,7 @@ func (b *builder) build() error {
 		log.Printf("Build of %s completed in %v", b.config.Name, elapsed)
 		b.config.BuildTime = int(elapsed.Seconds())
 		configuration.save()
+		return nil
 	}
 
 	log.Printf("Build of %s failed after %v", b.config.Name, elapsed)
