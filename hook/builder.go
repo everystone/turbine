@@ -63,6 +63,21 @@ func (b *builder) fetchCode() error {
 
 }
 
+func (b *builder) kill() {
+	if b.config.Stop != "" {
+		cmd := exec.Command("/bin/sh", "-c", b.config.Stop)
+		cmd.Dir = b.workingDir
+		log.Printf("Running stop command: %v", cmd.Args)
+		err := cmd.Run()
+		if err == nil {
+			return
+		}
+		log.Printf("Stop command failed: %v", err)
+	}
+	log.Printf("Killing process")
+	b.runner.Process.Kill()
+}
+
 func (b *builder) build() error {
 	// execute shell script that builds repo, read from json config
 	cmd := exec.Command("/bin/sh", "-c", b.config.Build)

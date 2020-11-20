@@ -7,6 +7,7 @@ type repoConfig struct {
 	Branch    string `json:"branch"`
 	Build     string `json:"build"`
 	Run       string `json:"run"`
+	Stop      string `json:"stop"`
 	BuildTime int    `json:"buildTime"`
 }
 
