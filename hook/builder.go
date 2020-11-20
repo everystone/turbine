@@ -16,6 +16,7 @@ type builder struct {
 	config     *repoConfig
 	buildStart time.Time
 	runner     *exec.Cmd
+	workingDir string
 }
 
 func (b *builder) fetchCode() error {
@@ -26,21 +27,20 @@ func (b *builder) fetchCode() error {
 		log.Printf("generate publickeys failed: %s\n", err.Error())
 	}
 
-	path := fmt.Sprintf("./repos/%s", b.config.Name)
-	repo, err := git.PlainClone(path, false, &git.CloneOptions{
+	repo, err := git.PlainClone(b.workingDir, false, &git.CloneOptions{
 		URL:      fmt.Sprintf("git@github.com:%s.git", b.config.Name),
 		Auth:     publicKeys,
 		Progress: os.Stdout,
 	})
 	if err != nil {
 		log.Printf("%s", err)
-		if _, err := os.Stat(path); os.IsNotExist(err) {
+		if _, err := os.Stat(b.workingDir); os.IsNotExist(err) {
 			log.Printf("and folder does not exist, aborting.")
 			return err
 		}
 
 		// attempt to open existing repo
-		repo, err = git.PlainOpen(path)
+		repo, err = git.PlainOpen(b.workingDir)
 		if err != nil {
 			log.Printf("Failed to open existing repo: %v", err)
 			return err
@@ -66,6 +66,7 @@ func (b *builder) fetchCode() error {
 func (b *builder) build() error {
 	// execute shell script that builds repo, read from json config
 	cmd := exec.Command(b.config.Build)
+	cmd.Dir = b.workingDir
 	err := cmd.Run()
 	t := time.Now()
 	elapsed := t.Sub(b.buildStart)
@@ -94,6 +95,7 @@ func (b *builder) deploy() {
 	// support rest api for status, stop, start, restart of service..
 
 	b.runner = exec.Command(b.config.Run)
+	b.runner.Dir = b.workingDir
 	log.Printf("Process started %s", b.config.Run)
 	b.runner.Run()
 
@@ -114,5 +116,5 @@ func (b *builder) run() {
 }
 
 func newBuilder(config *repoConfig) *builder {
-	return &builder{config, time.Now(), nil}
+	return &builder{config, time.Now(), nil, fmt.Sprintf("./repos/%s", config.Name)}
 }
