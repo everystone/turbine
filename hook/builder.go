@@ -84,8 +84,8 @@ func (b *builder) deploy() {
 
 }
 
-func (b *builder) run(branch string) {
-
+func (b *builder) run() {
+	log.Printf("Slave started %s branch: %s", b.config.Name, b.config.Branch)
 	err := b.fetchCode()
 	if err != nil {
 		return
@@ -99,5 +99,5 @@ func (b *builder) run(branch string) {
 }
 
 func newBuilder(config *repoConfig) *builder {
-	return &builder{config, time.Now()}
+	return &builder{config, time.Now(), nil}
 }

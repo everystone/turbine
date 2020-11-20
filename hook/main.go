@@ -39,14 +39,14 @@ func handleHook(w http.ResponseWriter, r *http.Request) {
 			// todo: let it finish if building?
 			slave.runner.Process.Kill()
 			slave = newBuilder(repo)
-			go slave.run(branch)
+			go slave.run()
 			return
 		}
 		build := newBuilder(repo)
 		slaves[repo.Name] = build
-		go build.run(branch)
+		go build.run()
 	} else {
-		log.Printf("No config matches.")
+		log.Printf("No config matches: %s  branch: %s", p.Repository.Fullname, branch)
 	}
 }
 
